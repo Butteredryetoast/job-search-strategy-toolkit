@@ -1,0 +1,17 @@
+[
+  {
+    "id": "decode-only",
+    "required": ["核心职责", "Must-have", "Nice-to-have", "隐藏信号", "业务目标"],
+    "forbidden": ["强制索取简历", "无依据匹配度"]
+  },
+  {
+    "id": "match-with-thin-evidence",
+    "required": ["逐项证据", "缺口", "待确认", "硬性门槛单列"],
+    "forbidden": ["补写不存在的实验经历"]
+  },
+  {
+    "id": "weak-public-data",
+    "required": ["证据不足", "来源", "检索日期"],
+    "forbidden": ["虚构薪资区间", "虚构团队文化"]
+  }
+]
