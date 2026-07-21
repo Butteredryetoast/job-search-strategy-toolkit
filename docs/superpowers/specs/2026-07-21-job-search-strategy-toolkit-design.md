@@ -1,327 +1,153 @@
 # Job Search Strategy Toolkit Design
 
-## Implementation base
+## Scope decision
 
-Use the downloaded MIT-licensed `offer-toolkit-skill` as the working code base. Rename and adapt its JD, resume, behavioral-interview, and HTML template modules to the approved architecture; add only the missing dual-lens review and selective PDF orchestration capabilities. Preserve the upstream MIT license and copyright notice. Remove upstream product branding, author footers, personal paths, persistent JD/story banks, and example candidate data from runtime behavior and generated reports.
+Build a Chinese-first public Codex skill by modifying the downloaded MIT-licensed `offer-toolkit-skill`. Preserve its MIT license and copyright notice. Reuse compatible JD, resume, and HTML-template assets; remove upstream branding, author footers, personal paths, persistent banks, and example candidate data from runtime behavior.
 
-## Status
+The final bundle has three capabilities only:
 
-Approved in conversation on 2026-07-21.
+1. JD insight.
+2. Resume evidence mining, rewriting, and JD tailoring.
+3. Independent HR-screening and hiring-manager resume review.
 
-## Product identity
+Delete every interview-related module, prompt, route, output, question bank, workbook, stage rule, and report field. PDF output contains only the revised resume. JD insight and dual-lens review are conversational outputs and never enter the PDF.
 
-- Skill name: `job-search-strategy-toolkit`
-- Directory: `job-search-strategy-toolkit/`
-- Public title: Job Search Strategy Toolkit
-- Chinese subtitle: 互联网白领全链路求职策略工具箱
+## Audience and language
 
-## Objective
+- Primary users: Chinese-speaking white-collar job seekers, especially ages 25–35 in first-tier and strong second-tier cities.
+- Default language: Simplified Chinese.
+- English or bilingual wording: only when the user requests it or the target JD/resume requires it.
+- Role coverage: operations, product, data analysis, marketing, finance, audit, HR, sales/BD, engineering, legal, strategy/consulting, and design.
+- Company coverage: large technology, mid-size internet, startup, multinational, state-owned, and bank/financial institution.
 
-Build a public Codex skill bundle for job seekers that supports the full path from understanding a job description to preparing for a specific interview round. Its primary audience is 25–35-year-old white-collar workers in Chinese first-tier and strong second-tier cities, especially people working in internet-related roles.
-
-The product is Chinese-first. Default interaction, terminology, examples, and PDF delivery use Simplified Chinese and reflect the conventions of the Chinese recruitment market. English or bilingual output is used only when the user requests it or the target role, JD, resume, or interview language requires it.
-
-The toolkit must produce evidence-based, practical outputs without fabricating experience, responsibilities, metrics, company facts, or salary data.
-
-## Target roles
-
-The first release supports these 12 role families:
-
-- Operations
-- Product management
-- Data analysis
-- Marketing
-- Finance
-- Audit
-- Human resources
-- Sales and business development
-- Software development and engineering
-- Legal
-- Strategy and consulting
-- Design
-
-## Target company types
-
-Rules must distinguish these six company types:
-
-- Large internet and technology companies
-- Small and medium internet companies
-- Startups
-- Multinational companies
-- State-owned enterprises
-- Banks and financial institutions
-
-## Product principles
-
-1. Never fabricate candidate experience, responsibilities, results, metrics, qualifications, company information, or compensation data.
-2. Ask one question at a time when collecting missing information.
-3. Separate user-confirmed facts, public-source facts, and model inferences.
-4. Cite online research with source links and retrieval dates.
-5. Treat user-confirmed facts as higher priority than generic role or company patterns.
-6. Do not use gender as an input to resume scoring, job matching, or interview assessment.
-7. Do not persist user profiles, resumes, job descriptions, interview records, or story banks.
-8. Let the user choose which report sections to include before PDF rendering.
-9. Use Simplified Chinese by default, preserve necessary English professional terms, and switch to English or bilingual output only when the task requires it.
+Age may inform career-stage context but never employability scoring. Gender never affects matching, scoring, or hiring recommendations.
 
 ## Architecture
-
-Use a top-level router, four independently discoverable sub-skills, shared references, PDF assets, and deterministic rendering utilities.
 
 ```text
 job-search-strategy-toolkit/
 ├── SKILL.md
-├── agents/
-│   └── openai.yaml
+├── agents/openai.yaml
+├── LICENSE
 ├── jd-insight-skill/
 │   ├── SKILL.md
+│   ├── agents/openai.yaml
 │   ├── prompts/
 │   └── frameworks/
 ├── resume-rebuild-skill/
 │   ├── SKILL.md
+│   ├── agents/openai.yaml
 │   ├── prompts/
-│   └── frameworks/
+│   ├── frameworks/
+│   └── templates/
 ├── resume-review-skill/
 │   ├── SKILL.md
-│   ├── prompts/
-│   └── frameworks/
-├── interview-prep-skill/
-│   ├── SKILL.md
+│   ├── agents/openai.yaml
 │   ├── prompts/
 │   └── frameworks/
 ├── references/
 │   ├── common/
 │   ├── roles/
-│   ├── companies/
-│   ├── review/
-│   ├── interviews/
-│   └── rubrics/
-├── assets/
-│   └── pdf-templates/
+│   └── companies/
+├── assets/report/
 └── scripts/
 ```
 
-Each sub-skill must be usable independently. The top-level skill routes broad or multi-stage requests and coordinates the shared session context.
+No interview child skill exists.
 
-## Top-level routing
+## Router
 
-The router determines the path from the material and intent available in the current conversation.
-
-| Available input | Behavior |
+| Available material | Behavior |
 |---|---|
-| JD only | Decode the JD first. Ask for a resume or career summary only if candidate matching is requested. |
-| Resume only | Ask whether the goal is general polishing, interview preparation, or tailoring to a specific JD. |
-| JD and resume | Offer the full sequence: JD insight, resume mining and tailoring, dual-lens review, and interview preparation. |
-| Interview request only | Ask for the interview round, then request only the company, role, resume, and JD information required for that round. |
-| Vague job-search request | Ask whether the user is evaluating roles, preparing an application, or preparing for an interview. |
+| JD only | Route to JD insight. Ask for a resume only when the user requests personal match analysis. |
+| Resume only | Ask one question: general polishing or tailoring to a specific JD? |
+| JD and resume | Decode the JD, rebuild/tailor the resume, then offer independent dual-lens review. |
+| Resume review request | Run HR and hiring-manager reviews independently, then synthesize disagreements. |
+| Vague request | Ask whether the user wants to understand a JD or improve/review a resume. |
 
-The user may invoke any sub-skill directly and is never required to run the complete sequence.
+Ask at most one necessary question at a time and never repeat information already supplied.
 
-## Session data flow
+## Shared evidence rules
 
-Maintain a temporary in-session task context containing:
+Use four evidence labels:
 
-- Target role and city
-- Company and company type
-- Raw JD and decoded requirements
-- Online research sources
-- Resume facts confirmed by the user
-- Current interview round
-- Numbers and edits confirmed by the user
+- `[用户确认]`: supplied or explicitly confirmed by the user.
+- `[公开来源]`: supported by a link and retrieval date.
+- `[合理推断]`: an inference with its basis stated.
+- `[待确认]`: material information not yet confirmed.
 
-Do not write this context into a user profile, JD bank, resume history, or story bank. Temporary rendering files must be removed after final delivery. Only the user-selected final PDF remains.
+Precedence: user-confirmed facts > current JD > selected role reference > selected company reference > general advice.
 
-## Sub-skill responsibilities
+Never invent candidate experience, metrics, titles, tools, certificates, projects, company facts, or compensation data. Do not save user profiles, resumes, JDs, review history, or any bank. Test fixtures must be explicitly anonymous and synthetic.
 
-### JD Insight Skill
+## JD insight
 
-Accept a JD URL or full text and perform:
+Decode five layers:
 
-- Company, product, industry, hiring-trend, and compensation research
-- Five-layer JD decoding: explicit responsibilities, must-haves, nice-to-haves, hidden signals, and real business objectives
-- Level, likely reporting line, and KPI inference
-- Candidate match, gap, and apply-or-not analysis when resume evidence is available
-- Source and inference labeling
+1. Explicit responsibilities and qualifications.
+2. Business goals and success metrics.
+3. Hidden expectations and likely ownership.
+4. Constraints, risks, and ambiguity.
+5. Application decision and next action.
 
-Its selectable report section is “JD Insight and Application Strategy.”
+When a resume is present, score match with evidence-linked dimensions: hard requirements 30, core experience 30, domain/company context 20, tools/methods 10, and practical constraints 10. Missing evidence lowers confidence and becomes `[待确认]`; it never becomes a guessed fact.
 
-### Resume Rebuild Skill
+JD output is conversation only. It does not create a PDF section.
 
-Support three workflows:
+## Resume rebuild
 
-- General resume improvement without a JD
-- Tailoring to a specific JD
-- One-question-at-a-time experience mining when evidence is thin
+When only a resume is supplied and the goal is unclear, ask exactly:
 
-Load the relevant role and company rules, preserve verified facts, flag unconfirmed data, and produce two selectable sections:
+> 你这次更需要通用修改润色，还是根据具体JD定制简历？
 
-- Revised resume
-- Resume change explanation
+Use a session-only normalized resume model. Mine one evidence dimension per question: business problem, personal action, method/tool, scale, result, and relevant constraint. Stop when more questions would not materially improve relevance or credibility.
 
-The revised resume defaults to a single-column ATS-friendly layout.
+Rewrite bullets as action + method + result while preserving uncertainty. Never promote participation to ownership, upgrade titles, add metrics, or hide weak evidence behind vague language.
 
-### Resume Review Skill
+The revised resume is the only PDF-eligible artifact.
 
-Evaluate the same resume from two independent perspectives.
+## Dual-lens resume review
 
-HR screening covers ATS readability, keyword relevance, career continuity, stability and risk signals, information density, and whether the candidate should enter the next stage.
+Run two independent passes before synthesis.
 
-Hiring-manager review covers professional capability, business understanding, project complexity, individual contribution, result credibility, ownership, collaboration, immediate contribution, and likely interview probes.
+HR rubric (100): ATS readability 15, role relevance 25, keyword coverage 15, continuity/risk 15, clarity/density 15, credibility/completeness 15.
 
-The report must show separate scores, separate verdicts, shared concerns, disagreements, and the highest-priority revisions. Its selectable report section is “Dual-Lens Resume Review.”
+Hiring-manager rubric (100): professional capability 20, business understanding 15, project complexity 15, individual contribution 15, result credibility 15, ownership/collaboration 10, immediate contribution/ramp-up cost 10.
 
-### Interview Prep Skill
+Each score cites resume text, a JD requirement, a user-confirmed fact, or a public source. Keep scores and verdicts independent; never create a blended score. Synthesis shows shared strengths, shared concerns, disagreements, blockers, and three to five priority revisions.
 
-Ask which interview round the user is preparing for, then load the relevant rules for:
+Review output is conversation only. It does not create a PDF section and contains no interview questions or probes.
 
-- HR screening
-- Business first round
-- Professional capability round
-- Department-head round
-- Executive or final round
+## PDF output
 
-Combine the interview round with role rules, company-type rules, JD requirements, resume evidence, and resume gaps. Produce two selectable sections:
+Reuse compatible upstream resume templates and rendering patterns. Generate one A4 PDF containing only the revised resume. Do not include JD analysis, review scores, change explanations, interview material, question workbooks, or generated table of contents.
 
-- Interview preparation plan
-- Printable interview question workbook
+The renderer must:
 
-Questions must include category, difficulty, competency assessed, why the interviewer is likely to ask, follow-up chain, answer framework, and writing space.
+- accept validated revised-resume data;
+- escape untrusted text and validate URLs;
+- render Simplified Chinese with stable font fallbacks;
+- preserve clickable contact links;
+- avoid blank pages, overflow, clipped text, placeholders, branding, and author footers;
+- use Chrome/Chromium print-to-PDF;
+- validate with `pdfinfo`, render pages with `pdftoppm`, and visually inspect the result.
 
-## Shared reference system
+## Validation
 
-Use a layered reference architecture rather than duplicating every role-by-company-by-stage combination.
+- Static tests enforce three child skills, 12 role references, six company references, valid metadata, Chinese-first routing, evidence safety, non-persistence, and complete absence of interview terms/modules.
+- Forward tests cover JD-only, resume-only, JD-plus-resume, and dual-lens review.
+- JD and review outputs must remain conversational.
+- PDF tests assert the artifact contains revised-resume content only.
+- Official `quick_validate.py` must pass for the top-level and all three child skills.
+- The final public repository retains the upstream MIT notice and contains no copied branding, personal paths, persistent banks, or real candidate data.
 
-```text
-references/
-├── common/
-│   ├── authenticity.md
-│   ├── career-stage.md
-│   └── evidence-levels.md
-├── roles/
-├── companies/
-├── review/
-├── interviews/
-└── rubrics/
-```
+## Acceptance criteria
 
-Load references in this order:
-
-1. Common authenticity and evidence rules
-2. Target-role rules
-3. Target-company-type rules
-4. Current task or interview-stage rules
-5. User-provided JD, resume, and confirmed facts
-
-Resolve conflicts using this precedence:
-
-> User-confirmed facts > current JD > role rules > company rules > general guidance
-
-Each role reference must define professional keywords, meaningful metrics, typical tools, common resume risks, HR screening priorities, hiring-manager priorities, and stage-specific interview themes.
-
-## Scoring model
-
-### JD match
-
-Check hard blockers separately, then calculate the match score:
-
-- Core responsibility alignment: 30%
-- Must-have requirements: 30%
-- Resume evidence strength: 20%
-- Industry and business context: 10%
-- Nice-to-have requirements: 10%
-
-Education, location, language, required certifications, and experience thresholds that are explicit hard blockers must remain visible and cannot be hidden by a high aggregate score.
-
-### HR review
-
-Score ATS readability, target relevance, keyword coverage, career continuity, risk signals, clarity, and information density. Provide a next-stage recommendation with cited evidence.
-
-### Hiring-manager review
-
-Score professional capability, business understanding, project complexity, individual contribution, result credibility, ownership, collaboration, immediate contribution, and expected ramp-up cost. Provide likely interview probes with cited evidence.
-
-Every score and verdict must reference a resume passage, JD requirement, user-confirmed fact, or cited public source.
-
-## Online research and evidence handling
-
-Use online research when JD analysis benefits from company, product, industry, hiring-trend, or compensation context.
-
-- Prefer primary and authoritative sources.
-- For China-market roles, prioritize authoritative Chinese sources and explain foreign-market data when it is not directly comparable.
-- Include source links and retrieval dates in the final PDF.
-- Label statements as confirmed public facts, user-confirmed facts, or inference.
-- If sources conflict, show the conflict and explain the uncertainty.
-- If reliable compensation information is unavailable, state that evidence is insufficient.
-- Never infer a JD from a company name when the JD URL cannot be read; ask the user to paste the full text.
-
-## PDF selection and assembly
-
-After analysis, show the user the report sections available for the current task:
-
-- JD Insight and Application Strategy
-- Revised Resume
-- Resume Change Explanation
-- Dual-Lens Resume Review
-- Interview Preparation Plan
-- Printable Interview Question Workbook
-
-Recommend sections based on the current goal, but let the user decide what to include. Assemble selected sections into one PDF with a generated table of contents. Omit unselected sections entirely.
-
-Use this pipeline:
-
-> Validated temporary structured data > HTML templates > browser PDF rendering > visual and structural verification
-
-The PDF must use Simplified Chinese by default, A4 print dimensions, stable Chinese font fallbacks, page numbers, generation date, target company and role where relevant, working source links, and visible evidence labels. Preserve standard English professional terms where Chinese translation would reduce precision. The question workbook must preserve adequate handwriting space. Generate English or bilingual sections only when requested or required by the target role.
-
-## Error handling
-
-- If a JD URL cannot be read, ask the user to paste the full text.
-- If a resume is scanned, run OCR and ask the user to confirm critical fields.
-- If metrics or evidence are missing, mark them as pending confirmation.
-- If sources conflict, present the conflicting evidence.
-- If compensation evidence is weak, do not invent a range.
-- If JD and resume facts conflict, ask the user to resolve the contradiction.
-- If PDF rendering has font, overflow, pagination, blank-page, or link problems, fix and rerender before delivery.
-- If PDF generation is unavailable, report the blocker and do not present HTML as the requested final deliverable.
-
-## Evaluation strategy
-
-Develop the skill with baseline and post-skill evaluations.
-
-### Routing evaluations
-
-Test JD-only, resume-only, JD-plus-resume, interview-only, and vague job-search prompts. Confirm correct routing and one-question-at-a-time behavior.
-
-### Professional evaluations
-
-Use representative operations, product, engineering, and additional role samples. Confirm correct JD decomposition, evidence-grounded resume edits, genuinely distinct HR and hiring-manager assessments, and stage-specific interview questions.
-
-### Adversarial evaluations
-
-Test missing metrics, unavailable company information, requests to exaggerate responsibility, demographic bias risks, and contradictions between the JD and resume.
-
-### PDF evaluations
-
-Verify selected-section assembly, table-of-contents accuracy, Chinese fonts, pagination, tables, links, ATS readability, workbook writing space, and absence of placeholders or copied branding.
-
-### Public-release evaluations
-
-Verify independent triggering of the top-level and four sub-skills, portability without author-specific absolute paths, absence of persistent user data, temporary-file cleanup, valid skill metadata, and original branding and wording.
-
-## Attribution and originality
-
-The implementation may learn from the modular bundle architecture of `offer-toolkit-skill`, but must use original naming, instructions, templates, scoring explanations, prompts, and visual identity. Do not copy the reference repository’s personal footer, author branding, output paths, example user data, or proprietary-looking presentation details.
-
-## Success criteria
-
-The first release is successful when:
-
-1. Users can enter from a JD, resume, interview request, or broad job-search request.
-2. The router asks only the next necessary question.
-3. All 12 roles and six company types load appropriate shared rules.
-4. Resume edits and scores are traceable to evidence.
-5. HR and hiring-manager reviews remain independent and useful.
-6. Interview preparation changes according to the interview round.
-7. Users can select report sections and receive one verified PDF.
-8. No persistent user profile, JD bank, resume history, or story bank is created.
-9. Chinese users receive clear Simplified Chinese interaction and PDF output by default, with reliable English or bilingual handling when required.
-10. The skill is portable, independently discoverable, and ready for public release.
+1. Users can enter with a JD, resume, both, or a resume-review request.
+2. Resume-only requests clarify general polish versus JD tailoring with one question.
+3. JD conclusions distinguish evidence, inference, and missing information.
+4. Resume rewrites never invent facts and can mine missing evidence one question at a time.
+5. HR and hiring-manager reviews remain independent and evidence-linked.
+6. No interview-related runtime content exists.
+7. Only the revised resume is exported to a verified PDF.
+8. Default interaction and artifacts are Simplified Chinese.
