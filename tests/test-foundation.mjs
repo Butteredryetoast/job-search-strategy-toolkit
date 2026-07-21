@@ -21,7 +21,7 @@ test('agent metadata exposes the toolkit identity', async () => {
   assert.match(defaultPrompt[1], /\$job-search-strategy-toolkit/);
 });
 
-test('top-level router is Chinese-first and exposes exactly the three supported child routes', async () => {
+test('runtime router is Chinese-first, exposes exactly the three supported child routes, and has no deleted-scope terms', async () => {
   const text = await readFile(new URL('SKILL.md', root), 'utf8');
   assert.match(text, /默认使用简体中文/);
   const childRoutes = [...text.matchAll(/\]\(([^)]+\/SKILL\.md)\)/g)].map((match) => match[1]);
@@ -30,7 +30,15 @@ test('top-level router is Chinese-first and exposes exactly the three supported 
     'resume-rebuild-skill/SKILL.md',
     'resume-review-skill/SKILL.md',
   ]);
-  assert.doesNotMatch(text, /interview|面试|题册|workbook|story[- ]bank|故事库/i);
+  const commonReferenceNames = (await readdir(new URL('references/common/', root)))
+    .filter((name) => name.endsWith('.md'));
+  const runtimeTexts = await Promise.all([
+    text,
+    ...commonReferenceNames.map((name) => readFile(new URL(`references/common/${name}`, root), 'utf8')),
+  ]);
+  for (const runtimeText of runtimeTexts) {
+    assert.doesNotMatch(runtimeText, /interview|面试|题册|workbook|story[- ]bank|故事库/i);
+  }
 });
 
 test('top-level router handles JD, resume, combined, review, and vague requests with one necessary question', async () => {
@@ -80,6 +88,7 @@ test('common references define evidence labels, precedence, authenticity, and ca
 
   const authenticity = await readFile(new URL('references/common/authenticity.md', root), 'utf8');
   assert.match(authenticity, /不得杜撰/);
+  assert.match(authenticity, /不保存任何用户材料、分析结果或工作记录；仅在当前对话中使用用户提供的材料。/);
 
   const careerStage = await readFile(new URL('references/common/career-stage.md', root), 'utf8');
   assert.match(careerStage, /年龄只能作为职业阶段语境/);

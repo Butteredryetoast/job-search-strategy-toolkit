@@ -118,3 +118,47 @@ fail 0
 - 顶层仍只包含三个 child-SKILL 路由，并保留 chat-only 与 revised-resume-only PDF 断言。
 - `git diff --check` 无输出；未修改子 Skill 业务正文。
 - 再次运行 `node --test tests/test-foundation.mjs`：`pass 7`、`fail 1`；唯一失败仍是 Task 4 尚未创建 `references/roles/` 和 `references/companies/` 目录。
+
+## 复审修复：共用参考零残留
+
+复审发现 `references/common/authenticity.md` 仍有已删除范围术语。零残留断言现扫描顶层 `SKILL.md` 和 `references/common/` 下所有 Markdown 文件。
+
+### RED
+
+先修改测试，再运行：
+
+```bash
+node --test --test-name-pattern='runtime router|common references' tests/test-foundation.mjs
+```
+
+关键输出：
+
+```text
+tests 2
+pass 0
+fail 2
+```
+
+失败证明旧 `authenticity.md` 同时命中禁止词和旧的枚举式持久化规则。
+
+### GREEN
+
+将 `authenticity.md` 的规则精确改为：
+
+```text
+不保存任何用户材料、分析结果或工作记录；仅在当前对话中使用用户提供的材料。
+```
+
+随后运行同一命令：
+
+```text
+tests 2
+pass 2
+fail 0
+```
+
+### 自审与全量检查
+
+- 扫描 `SKILL.md` 和 `references/common/*.md` 的 `interview|面试|题册|workbook|story-bank|故事库` 无匹配。
+- `git diff --check` 无输出。
+- `node --test tests/test-foundation.mjs` 仍为 `pass 7`、`fail 1`；唯一失败是 Task 4 的角色/企业目录计数。
