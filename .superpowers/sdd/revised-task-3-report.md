@@ -79,3 +79,42 @@ fail 1
 ```
 
 唯一失败：`shared references cover 12 roles and 6 company types`。原因是 `references/roles/` 与 `references/companies/` 尚不存在；这正是 Task 4 的职责。没有其他失败。
+
+## 审查修复：顶层已删除范围术语
+
+独立审查指出顶层运行时文档仍以否定方式提及已删除范围的术语，且测试把该提及固化为必需行为。本轮已改为通用的“只支持上述三类服务；其他请求不在支持范围”，并将持久化约束改为不保存任何用户材料、分析结果或工作记录。
+
+### RED
+
+先仅修改测试，再运行：
+
+```bash
+node --test --test-name-pattern='top-level router|top-level skill forbids' tests/test-foundation.mjs
+```
+
+关键输出：
+
+```text
+tests 4
+pass 2
+fail 2
+```
+
+失败分别证明顶层仍命中禁止的已删除范围词，以及尚未使用通用持久化规则。
+
+### GREEN
+
+修改顶层 `SKILL.md` 后运行同一命令：
+
+```text
+tests 4
+pass 4
+fail 0
+```
+
+### 自审与全量检查
+
+- 顶层 `SKILL.md` 对 `interview|面试|题册|workbook|story-bank|故事库` 的扫描无匹配。
+- 顶层仍只包含三个 child-SKILL 路由，并保留 chat-only 与 revised-resume-only PDF 断言。
+- `git diff --check` 无输出；未修改子 Skill 业务正文。
+- 再次运行 `node --test tests/test-foundation.mjs`：`pass 7`、`fail 1`；唯一失败仍是 Task 4 尚未创建 `references/roles/` 和 `references/companies/` 目录。

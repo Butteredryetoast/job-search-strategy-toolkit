@@ -30,8 +30,7 @@ test('top-level router is Chinese-first and exposes exactly the three supported 
     'resume-rebuild-skill/SKILL.md',
     'resume-review-skill/SKILL.md',
   ]);
-  assert.match(text, /不提供面试内容/);
-  assert.doesNotMatch(text, /bq-skill|BQ|Story Bank/i);
+  assert.doesNotMatch(text, /interview|面试|题册|workbook|story[- ]bank|故事库/i);
 });
 
 test('top-level router handles JD, resume, combined, review, and vague requests with one necessary question', async () => {
@@ -59,7 +58,7 @@ test('shared references cover 12 roles and 6 company types', async () => {
 
 test('top-level skill forbids persistence and demographic scoring', async () => {
   const text = await readFile(new URL('SKILL.md', root), 'utf8');
-  assert.match(text, /不保存用户画像、简历、JD、评审记录或故事库/);
+  assert.match(text, /不保存任何用户材料、分析结果或工作记录/);
   assert.match(text, /不得将性别用于评分、匹配或录用建议/);
 });
 
