@@ -114,6 +114,28 @@ test('active router evaluation contains only current supported route scenarios',
   assert.doesNotMatch(JSON.stringify(scenarios), /interview|面试|题册|workbook|story[- ]bank|故事库/i);
 });
 
+test('router with-skill baseline records real loading scope and separates router from downstream status', async () => {
+  const text = await readFile(new URL('baselines/router-with-skill.md', import.meta.url), 'utf8');
+  assert.equal([...text.matchAll(/^\*\*完整输入：\*\*$/gm)].length, 3);
+  assert.equal([...text.matchAll(/^\*\*实际读取：\*\*$/gm)].length, 3);
+  assert.equal([...text.matchAll(/^\*\*原始输出：\*\*$/gm)].length, 3);
+  assert.equal([...text.matchAll(/^\*\*观察：\*\*$/gm)].length, 3);
+  for (const reference of [
+    'job-search-strategy-toolkit/SKILL.md',
+    'references/common/authenticity.md',
+    'references/common/evidence-levels.md',
+    'references/common/career-stage.md',
+    'jd-insight-skill/SKILL.md',
+    'resume-rebuild-skill/SKILL.md',
+    'resume-review-skill/SKILL.md',
+  ]) {
+    assert.match(text, new RegExp(reference.replaceAll('.', '\\.')));
+  }
+  assert.doesNotMatch(text, /\[用户提供\]/);
+  assert.equal([...text.matchAll(/路由层：通过/g)].length, 3);
+  assert.equal([...text.matchAll(/下游状态：gap/g)].length, 3);
+});
+
 test('top-level skill forbids persistence and demographic scoring', async () => {
   const text = await readFile(new URL('SKILL.md', root), 'utf8');
   assert.match(text, /不保存任何用户材料、分析结果或工作记录/);
