@@ -90,3 +90,9 @@ job-search-strategy-toolkit/
 ├── references/
 └── scripts/render-resume.mjs
 ```
+
+当前提供 16 套简历模板，新增模板包括：
+
+- `minimal-grid.html`：ATS 极简网格，适合大多数岗位投递
+- `navy-executive.html`：深蓝商务风，适合管理、客户和综合岗位
+- `warm-editorial.html`：暖色编辑风，适合市场、品牌、内容和设计岗位
