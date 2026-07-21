@@ -6,11 +6,11 @@
 # ---- Header ----
 name:            # 全名
 headline:        # 一句话定位 / 目标职位，如 "Senior Backend Engineer"
-template:        # 模板文件名（不含 .html），如 classic-ats / minimal-grid / navy-executive / warm-editorial；缺省为 classic-ats
+template:        # 模板文件名（不含 .html）；有 photo 时自动使用 photo-corporate/photo-minimal，无 photo 时自动避开这两套
 location:        # 城市, 国家（可选，远程时可省）
 email:
 phone:           # 可选
-photo:           # 可选，头像图片 URL 或 data URI。仅少数带头像的模板（photo-corporate / photo-minimal）会用；其余模板忽略。
+photo:           # 可选，原简历头像的 URL、data:image 数据或本地绝对路径；有照片必须保留，渲染器自动选择带照片模板。
 links:           # 0-N 个，name + url
   - { name: LinkedIn, url: }
   - { name: GitHub,   url: }

@@ -57,3 +57,26 @@ test('template directory contains the selectable HTML templates', async () => {
   assert.ok(names.includes('navy-executive.html'));
   assert.ok(names.includes('warm-editorial.html'));
 });
+
+test('photo resumes preserve the original photo and switch to a photo template', async () => {
+  const photoFixture = JSON.parse(await readFile(fixture, 'utf8'));
+  photoFixture.template = 'minimal-grid';
+  photoFixture.photo = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0OCIgc3Ryb2tlPSIjMTMyYjRmIiBmaWxsPSIjY2JkOGU4Ii8+PC9zdmc+';
+  const photoFixturePath = '/tmp/job-search-toolkit-photo.json';
+  await import('node:fs/promises').then(({ writeFile }) => writeFile(photoFixturePath, JSON.stringify(photoFixture), 'utf8'));
+  execFileSync('node', [renderer, photoFixturePath, '/tmp/job-search-toolkit-photo.pdf'], { stdio: 'pipe' });
+  const renderedHtml = await readFile('/tmp/job-search-toolkit-photo.pdf.html', 'utf8');
+  assert.match(renderedHtml, /data-template="photo-corporate"/);
+  assert.match(renderedHtml, /<img[^>]+src="data:image\/svg\+xml;base64,/);
+});
+
+test('resumes without photos never use a photo template', async () => {
+  const noPhotoFixture = JSON.parse(await readFile(fixture, 'utf8'));
+  noPhotoFixture.template = 'photo-minimal';
+  const noPhotoPath = '/tmp/job-search-toolkit-no-photo.json';
+  await import('node:fs/promises').then(({ writeFile }) => writeFile(noPhotoPath, JSON.stringify(noPhotoFixture), 'utf8'));
+  execFileSync('node', [renderer, noPhotoPath, '/tmp/job-search-toolkit-no-photo.pdf'], { stdio: 'pipe' });
+  const renderedHtml = await readFile('/tmp/job-search-toolkit-no-photo.pdf.html', 'utf8');
+  assert.match(renderedHtml, /data-template="classic-ats"/);
+  assert.doesNotMatch(renderedHtml, /<img\b/);
+});
