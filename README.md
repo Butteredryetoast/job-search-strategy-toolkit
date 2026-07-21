@@ -90,7 +90,3 @@ job-search-strategy-toolkit/
 ├── references/
 └── scripts/render-resume.mjs
 ```
-
-## License
-
-MIT License。上游模板与方法论资产按原许可证保留。
