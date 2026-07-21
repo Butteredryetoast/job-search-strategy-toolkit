@@ -4,7 +4,7 @@ import { access, readFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-const root = new URL('../job-search-strategy-toolkit/', import.meta.url);
+const root = new URL('../', import.meta.url);
 const fixture = new URL('./fixtures/revised-resume.json', import.meta.url);
 const output = '/tmp/job-search-toolkit-revised-resume.pdf';
 

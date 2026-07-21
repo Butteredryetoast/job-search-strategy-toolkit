@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const base = new URL('../job-search-strategy-toolkit/resume-review-skill/', import.meta.url);
+const base = new URL('../resume-review-skill/', import.meta.url);
 
 test('HR and manager reviews run as independent passes', async () => {
   const text = await readFile(new URL('SKILL.md', base), 'utf8');

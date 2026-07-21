@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const base = new URL('../job-search-strategy-toolkit/jd-insight-skill/', import.meta.url);
+const base = new URL('../jd-insight-skill/', import.meta.url);
 
 test('JD workflow decodes before matching and supports decode-only mode', async () => {
   const text = await readFile(new URL('SKILL.md', base), 'utf8');

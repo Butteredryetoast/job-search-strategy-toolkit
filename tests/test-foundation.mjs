@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, readdir } from 'node:fs/promises';
 
-const root = new URL('../job-search-strategy-toolkit/', import.meta.url);
+const root = new URL('../', import.meta.url);
 
 test('top-level skill declares required frontmatter metadata', async () => {
   const text = await readFile(new URL('SKILL.md', root), 'utf8');
@@ -121,7 +121,7 @@ test('router with-skill baseline records real loading scope and separates router
   assert.equal([...text.matchAll(/^\*\*原始输出：\*\*$/gm)].length, 3);
   assert.equal([...text.matchAll(/^\*\*观察：\*\*$/gm)].length, 3);
   for (const reference of [
-    'job-search-strategy-toolkit/SKILL.md',
+    'SKILL.md',
     'references/common/authenticity.md',
     'references/common/evidence-levels.md',
     'references/common/career-stage.md',

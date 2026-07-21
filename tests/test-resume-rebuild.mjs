@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
-const base = new URL('../job-search-strategy-toolkit/resume-rebuild-skill/', import.meta.url);
+const base = new URL('../resume-rebuild-skill/', import.meta.url);
 
 test('resume-only requests clarify the goal before editing', async () => {
   const text = await readFile(new URL('SKILL.md', base), 'utf8');

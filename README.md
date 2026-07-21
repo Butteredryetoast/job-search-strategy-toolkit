@@ -30,7 +30,7 @@ https://github.com/Butteredryetoast/job-search-strategy-toolkit
 
 ### 方式二：手动下载
 
-下载 ZIP：打开仓库主页，点击 **Code → Download ZIP**，解压后将 `job-search-strategy-toolkit` 文件夹放入 Codex 的 skills 目录。
+下载 ZIP：打开仓库主页，点击 **Code → Download ZIP**，解压后将仓库根目录直接放入 Codex 的 skills 目录。根目录中应能看到 `SKILL.md`。
 
 也可以使用 Git：
 
@@ -82,7 +82,7 @@ cp -R job-search-strategy-toolkit /你的/Codex/skills目录/
 ## 目录
 
 ```text
-job-search-strategy-toolkit/
+job-search-strategy-toolkit/       # 下载后即为 Skill 根目录
 ├── SKILL.md
 ├── jd-insight-skill/
 ├── resume-rebuild-skill/

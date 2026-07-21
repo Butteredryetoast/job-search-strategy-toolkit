@@ -21,11 +21,11 @@
 
 **实际读取：**
 
-- `job-search-strategy-toolkit/SKILL.md`
-- `job-search-strategy-toolkit/references/common/authenticity.md`
-- `job-search-strategy-toolkit/references/common/evidence-levels.md`
-- `job-search-strategy-toolkit/references/common/career-stage.md`
-- `job-search-strategy-toolkit/resume-rebuild-skill/SKILL.md`
+- `SKILL.md`
+- `references/common/authenticity.md`
+- `references/common/evidence-levels.md`
+- `references/common/career-stage.md`
+- `resume-rebuild-skill/SKILL.md`
 
 **原始输出：**
 
@@ -68,11 +68,11 @@
 
 **实际读取：**
 
-- `job-search-strategy-toolkit/SKILL.md`
-- `job-search-strategy-toolkit/references/common/authenticity.md`
-- `job-search-strategy-toolkit/references/common/evidence-levels.md`
-- `job-search-strategy-toolkit/references/common/career-stage.md`
-- `job-search-strategy-toolkit/jd-insight-skill/SKILL.md`
+- `SKILL.md`
+- `references/common/authenticity.md`
+- `references/common/evidence-levels.md`
+- `references/common/career-stage.md`
+- `jd-insight-skill/SKILL.md`
 
 **原始输出：**
 
@@ -105,11 +105,11 @@
 
 **实际读取：**
 
-- `job-search-strategy-toolkit/SKILL.md`
-- `job-search-strategy-toolkit/references/common/authenticity.md`
-- `job-search-strategy-toolkit/references/common/evidence-levels.md`
-- `job-search-strategy-toolkit/references/common/career-stage.md`
-- `job-search-strategy-toolkit/resume-review-skill/SKILL.md`
+- `SKILL.md`
+- `references/common/authenticity.md`
+- `references/common/evidence-levels.md`
+- `references/common/career-stage.md`
+- `resume-review-skill/SKILL.md`
 
 **原始输出：**
 
