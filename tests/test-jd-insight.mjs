@@ -7,7 +7,7 @@ const base = new URL('../job-search-strategy-toolkit/jd-insight-skill/', import.
 test('JD workflow decodes before matching and supports decode-only mode', async () => {
   const text = await readFile(new URL('SKILL.md', base), 'utf8');
   assert.match(text, /先完成五层解读/);
-  assert.match(text, /只解读JD时不得索取简历/);
+  assert.match(text, /仅当用户要求个人匹配或简历定制时，才索取简历/);
 });
 
 test('match rubric contains approved weights and blocker separation', async () => {

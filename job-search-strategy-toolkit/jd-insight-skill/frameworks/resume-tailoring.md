@@ -7,7 +7,7 @@
 ## 零 · 共用原则（三版都遵守）
 
 1. **不杜撰事实**——不能编新成就、新数字、新职责。
-2. **不夸大动词**——"参与" 不能改成 "主导"。这条违反招聘经理会在面试里 follow-up 时拆穿。
+2. **不夸大动词**——"参与" 不能改成 "主导"；证据不足时保留原始职责和 `[待确认]`。
 3. **关键词原样用 JD 的词**——招聘经理 / ATS 都在搜 JD 里的词。用户简历里写 "improved performance"，JD 写 "optimized latency"，改成 "optimized latency"（如果事实匹配）。
 4. **数字保留 / 强化**——能加数字的地方加，不能加就保留原有的。
 5. **动词排序：影响 > 动作 > 工具**——
@@ -114,8 +114,8 @@
   - drove, defined, framed, aligned, influenced, shipped, scaled, established, recovered, prevented
   - 比 designed / built / worked on / collaborated 强得多
 - **保留 1-2 个"hook 细节"**
-  - 招聘经理会在面试里 follow-up 的钩子
-  - 例：bullet 里写"cut drop-off to 22%"——面试官会问"为什么是 22%？怎么测的？为什么不是 15%？"——这些 hook 让 HM 觉得"这人有真东西"
+  - 招聘经理需要核实的证据钩子
+  - 例：bullet 里写"cut drop-off to 22%"，必须说明口径、时间范围和数据来源；没有确认就标 `[待确认]`
 - **体现 craft / 反思**（如果是设计 / 工程岗）
   - 加 1-2 个"我是怎么做这个决定的"细节
   - 不要纯流程描述

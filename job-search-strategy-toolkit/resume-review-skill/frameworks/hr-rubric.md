@@ -31,4 +31,4 @@
 - evidence: ["简历原文或JD条款"]
 - risk: "明确风险或无"
 - confidence: "high、medium或low"
-- next_question: "需要面试验证的问题或无"
+- next_check: "需要核实的信息或无"
