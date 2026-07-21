@@ -1,0 +1,20 @@
+[
+  {
+    "id": "resume-only",
+    "prompt": "我上传了一份简历，帮我看看。",
+    "expected_route": "ask_resume_goal",
+    "required_behavior": ["一次只问一个问题", "询问通用润色、面试准备或JD定制"]
+  },
+  {
+    "id": "jd-only",
+    "prompt": "这是产品经理JD：负责增长产品规划，要求5年以上B端产品经验。",
+    "expected_route": "jd_insight",
+    "required_behavior": ["先解读JD", "仅在需要匹配度时索取简历"]
+  },
+  {
+    "id": "interview-only",
+    "prompt": "我下周是部门负责人面，帮我准备。",
+    "expected_route": "interview_prep",
+    "required_behavior": ["识别部门负责人面", "只追问下一个必要信息"]
+  }
+]
