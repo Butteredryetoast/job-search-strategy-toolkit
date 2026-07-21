@@ -16,7 +16,9 @@ test('agent metadata exposes the toolkit identity', async () => {
   assert.match(yaml, /^  display_name: "Job Search Strategy Toolkit"$/m);
   assert.ok([...shortDescription].length >= 25 && [...shortDescription].length <= 64);
   assert.match(yaml, new RegExp(`^  short_description: "${shortDescription}"$`, 'm'));
-  assert.match(yaml, /^  default_prompt: (?!\s*$).*\$job-search-strategy-toolkit.*$/m);
+  const defaultPrompt = yaml.match(/^  default_prompt: "([^"\n]+)"$/m);
+  assert.ok(defaultPrompt, 'default_prompt must be a non-empty double-quoted string');
+  assert.match(defaultPrompt[1], /\$job-search-strategy-toolkit/);
 });
 
 test('top-level skill is Chinese-first and routes all entry modes', async () => {
