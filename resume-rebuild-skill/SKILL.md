@@ -24,7 +24,7 @@ description: Use when a Chinese-speaking job seeker provides a resume and needs 
 
 ## 输出
 
-先在对话中输出修改前后对照、修改理由和待确认项；用户确认后生成 `revised-resume`。PDF 只包含这份修订简历，使用 `scripts/render-resume.mjs`，不把 JD 解读或评审结果放入 PDF。
+先在对话中输出修改前后对照、修改理由和待确认项；用户确认后生成 `revised-resume`。生成 PDF 前让用户选择模板，写入 `template` 字段（如 `classic-ats`、`minimal-grid`、`navy-executive`、`warm-editorial`）；`scripts/render-resume.mjs` 会读取对应的 `templates/<template>.html`，不使用固定默认 CSS。PDF 只包含这份修订简历，不把 JD 解读或评审结果放入 PDF。
 
 ## References
 

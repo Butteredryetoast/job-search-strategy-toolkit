@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { dirname, resolve, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 
 const [, , inputArg, outputArg] = process.argv;
 if (!inputArg || !outputArg) {
@@ -15,15 +16,28 @@ const escapeHtml = (value = '') => String(value)
 const safeUrl = (value = '') => /^(https?:|mailto:)/i.test(String(value)) ? String(value) : '';
 const data = JSON.parse(await readFile(resolve(inputArg), 'utf8'));
 if (data.id !== 'revised-resume') throw new Error('输入必须是 revised-resume 数据');
+const templateName = data.template || 'classic-ats';
+if (!/^[a-z0-9-]+$/.test(templateName)) throw new Error(`模板不存在：${templateName}`);
+const templatePath = join(dirname(fileURLToPath(import.meta.url)), '..', 'resume-rebuild-skill', 'templates', `${templateName}.html`);
+let templateSource;
+try {
+  templateSource = await readFile(templatePath, 'utf8');
+} catch {
+  throw new Error(`模板不存在：${templateName}。可选模板位于 resume-rebuild-skill/templates/`);
+}
+const styleMatch = templateSource.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+if (!styleMatch) throw new Error(`模板缺少 <style>：${templateName}`);
+const templateStyles = styleMatch[1];
 const contact = data.contact ?? {};
 const contactItems = [contact.city, contact.email, contact.phone, contact.url].filter(Boolean).map((item) => {
   const url = safeUrl(item);
   return url ? `<a href="${escapeHtml(url)}">${escapeHtml(item)}</a>` : escapeHtml(item);
 }).join(' · ');
-const entries = (data.experience ?? []).map((item) => `<article><div class="row"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.company)} · ${escapeHtml(item.start)}–${escapeHtml(item.end)}</span></div><ul>${(item.bullets ?? []).map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join('')}</ul></article>`).join('');
-const education = (data.education ?? []).map((item) => `<article><div class="row"><strong>${escapeHtml(item.degree)}</strong><span>${escapeHtml(item.school)} · ${escapeHtml(item.end)}</span></div></article>`).join('');
-const skills = (data.skills ?? []).map((item) => `<li>${escapeHtml(item)}</li>`).join('');
-const html = `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>${escapeHtml(data.name || '修订简历')}</title><style>@page{size:A4;margin:13mm}*{box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",Arial,sans-serif;color:#17202a;font-size:10.5pt;line-height:1.45;margin:0}h1{font-size:24pt;margin:0 0 2pt}h2{font-size:11pt;letter-spacing:.12em;border-bottom:1px solid #9aa4ad;padding-bottom:3pt;margin:14pt 0 7pt}.headline{font-size:12pt;color:#405466}.contact{font-size:9pt;color:#536575;margin-top:5pt}.contact a{color:inherit;text-decoration:none}.row{display:flex;justify-content:space-between;gap:12pt}.row span{color:#536575;white-space:nowrap}article{margin-bottom:8pt}ul{margin:3pt 0 0;padding-left:16pt}li{margin:1pt 0}.summary{margin:0}.pending{color:#9b5c00}</style></head><body><header><h1>${escapeHtml(data.name || '修订简历')}</h1><div class="headline">${escapeHtml(data.headline || '')}</div><div class="contact">${contactItems}</div></header>${data.summary ? `<section><h2>个人概述</h2><p class="summary">${escapeHtml(data.summary)}</p></section>` : ''}${entries ? `<section><h2>工作经历</h2>${entries}</section>` : ''}${data.projects?.length ? `<section><h2>项目经历</h2>${data.projects.map((item) => `<article><div class="row"><strong>${escapeHtml(item.name)}</strong><span>${escapeHtml(item.period || '')}</span></div><p>${escapeHtml(item.description || '')}</p></article>`).join('')}</section>` : ''}${education ? `<section><h2>教育经历</h2>${education}</section>` : ''}${skills ? `<section><h2>技能</h2><ul>${skills}</ul></section>` : ''}</body></html>`;
+const entries = (data.experience ?? []).map((item) => `<div class="entry"><div class="row"><span><span class="title">${escapeHtml(item.title)}</span> · <span class="org">${escapeHtml(item.company)}</span></span><span class="date">${escapeHtml(item.start)} — ${escapeHtml(item.end)}</span></div><ul>${(item.bullets ?? []).map((bullet) => `<li>${escapeHtml(bullet)}</li>`).join('')}</ul></div>`).join('');
+const projects = (data.projects ?? []).map((item) => `<div class="entry"><div class="row"><span class="title">${escapeHtml(item.name)}</span><span class="date">${escapeHtml(item.period || '')}</span></div><p>${escapeHtml(item.description || '')}</p></div>`).join('');
+const education = (data.education ?? []).map((item) => `<div class="entry"><div class="row"><span><span class="title">${escapeHtml(item.degree)}</span> · <span class="org">${escapeHtml(item.school)}</span></span><span class="date">${escapeHtml(item.end)}</span></div></div>`).join('');
+const skills = (data.skills ?? []).map((item) => `<div class="skills-row">${escapeHtml(item)}</div>`).join('');
+const html = `<!doctype html><html lang="zh-CN" data-template="${escapeHtml(templateName)}"><head><meta charset="utf-8"><title>${escapeHtml(data.name || '修订简历')}</title><style>${templateStyles}</style></head><body><div class="page"><header><div><h1>${escapeHtml(data.name || '修订简历')}</h1><div class="headline">${escapeHtml(data.headline || '')}</div></div><div class="contact">${contactItems}</div></header>${data.summary ? `<section><h2>个人概述</h2><p class="summary">${escapeHtml(data.summary)}</p></section>` : ''}${entries ? `<section><h2>工作经历</h2>${entries}</section>` : ''}${projects ? `<section><h2>项目经历</h2>${projects}</section>` : ''}${education ? `<section><h2>教育经历</h2>${education}</section>` : ''}${skills ? `<section><h2>技能</h2><div class="skills">${skills}</div></section>` : ''}</div></body></html>`;
 const htmlPath = `${resolve(outputArg)}.html`;
 await mkdir(dirname(resolve(outputArg)), { recursive: true });
 await writeFile(htmlPath, html, 'utf8');

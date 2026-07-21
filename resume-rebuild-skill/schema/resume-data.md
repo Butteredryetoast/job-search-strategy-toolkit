@@ -6,6 +6,7 @@
 # ---- Header ----
 name:            # 全名
 headline:        # 一句话定位 / 目标职位，如 "Senior Backend Engineer"
+template:        # 模板文件名（不含 .html），如 classic-ats / minimal-grid / navy-executive / warm-editorial；缺省为 classic-ats
 location:        # 城市, 国家（可选，远程时可省）
 email:
 phone:           # 可选
