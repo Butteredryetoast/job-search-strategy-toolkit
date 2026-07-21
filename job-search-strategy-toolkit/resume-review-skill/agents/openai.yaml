@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dual-Lens Resume Review"
+  short_description: "从HR招聘筛选和部门负责人角度独立评分并评审中文简历"
+  default_prompt: "Use $resume-review-skill to review a Chinese resume from HR and hiring-manager perspectives."

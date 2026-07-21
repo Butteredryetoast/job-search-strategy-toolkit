@@ -1,0 +1,4 @@
+interface:
+  display_name: "Job Search Strategy Toolkit"
+  short_description: "面向中文求职者的JD解读、简历优化、双视角评审与简历PDF工具箱"
+  default_prompt: "Use $job-search-strategy-toolkit to analyze a Chinese JD, rebuild a resume, and provide a dual-lens review."

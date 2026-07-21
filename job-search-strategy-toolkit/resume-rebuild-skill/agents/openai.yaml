@@ -1,0 +1,4 @@
+interface:
+  display_name: "Resume Rebuild"
+  short_description: "面向中文求职者的简历深挖、真实改写、通用润色与JD定制"
+  default_prompt: "Use $resume-rebuild-skill to deeply improve a Chinese resume and tailor it to a JD."

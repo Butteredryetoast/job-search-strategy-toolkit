@@ -1,0 +1,4 @@
+interface:
+  display_name: "JD Insight"
+  short_description: "面向中文求职者的JD解读、证据匹配、投递判断与岗位风险分析"
+  default_prompt: "Use $jd-insight-skill to interpret a Chinese job description and assess evidence-based fit."
