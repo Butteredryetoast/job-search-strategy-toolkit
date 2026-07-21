@@ -11,9 +11,12 @@ test('top-level skill declares required frontmatter metadata', async () => {
 
 test('agent metadata exposes the toolkit identity', async () => {
   const yaml = await readFile(new URL('agents/openai.yaml', root), 'utf8');
+  const shortDescription = '面向中文求职者的JD解读、简历优化、双视角评审与面试准备工具箱';
   assert.match(yaml, /^interface:\n/);
   assert.match(yaml, /^  display_name: "Job Search Strategy Toolkit"$/m);
-  assert.match(yaml, /^  short_description: "互联网白领全链路求职策略工具箱"$/m);
+  assert.ok([...shortDescription].length >= 25 && [...shortDescription].length <= 64);
+  assert.match(yaml, new RegExp(`^  short_description: "${shortDescription}"$`, 'm'));
+  assert.match(yaml, /^  default_prompt: (?!\s*$).*\$job-search-strategy-toolkit.*$/m);
 });
 
 test('top-level skill is Chinese-first and routes all entry modes', async () => {
