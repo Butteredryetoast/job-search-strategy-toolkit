@@ -313,8 +313,8 @@ Use fresh contexts and record verbatim outputs. Confirm scenario A asks only the
 ```bash
 .venv/bin/python /Users/mac/.codex/skills/.system/skill-creator/scripts/generate_openai_yaml.py job-search-strategy-toolkit/resume-rebuild-skill \
   --interface display_name="Resume Rebuild" \
-  --interface short_description="简历深挖、润色与JD定制" \
-  --interface default_prompt="请先判断我需要通用润色、面试准备还是按JD定制。"
+  --interface short_description="面向中文求职者的简历深挖、真实改写、通用润色与JD定制" \
+  --interface default_prompt="请使用 $resume-rebuild-skill 先判断我需要通用润色、面试准备还是按JD定制。"
 ```
 
 - [ ] **Step 3: Validate metadata and tests**

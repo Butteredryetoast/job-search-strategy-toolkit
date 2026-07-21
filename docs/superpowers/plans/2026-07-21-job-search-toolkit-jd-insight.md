@@ -300,8 +300,8 @@ Use fresh contexts. Record verbatim outputs in `tests/baselines/jd-insight-with-
 ```bash
 .venv/bin/python /Users/mac/.codex/skills/.system/skill-creator/scripts/generate_openai_yaml.py job-search-strategy-toolkit/jd-insight-skill \
   --interface display_name="JD Insight" \
-  --interface short_description="中文JD解读、匹配与投递策略" \
-  --interface default_prompt="请先解读这份JD；只有需要匹配度时再向我索取简历。"
+  --interface short_description="面向中文求职者的JD解读、证据匹配、投递判断与面试风险分析" \
+  --interface default_prompt="请使用 $jd-insight-skill 先解读这份JD；只有需要匹配度时再向我索取简历。"
 ```
 
 - [ ] **Step 3: Run official and static validation**

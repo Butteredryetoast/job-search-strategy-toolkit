@@ -308,8 +308,8 @@ Record verbatim outputs. Confirm scenario A asks only the round, scenario B prio
 ```bash
 .venv/bin/python /Users/mac/.codex/skills/.system/skill-creator/scripts/generate_openai_yaml.py job-search-strategy-toolkit/interview-prep-skill \
   --interface display_name="Interview Prep" \
-  --interface short_description="按面试轮次生成准备方案和题册" \
-  --interface default_prompt="请先确认我正在准备哪一轮面试，再生成针对性方案。"
+  --interface short_description="按实际面试轮次生成中文准备方案、针对性问题与可打印题册" \
+  --interface default_prompt="请使用 $interview-prep-skill 先确认我正在准备哪一轮面试，再生成针对性方案。"
 ```
 
 - [ ] **Step 3: Run official and static validation**

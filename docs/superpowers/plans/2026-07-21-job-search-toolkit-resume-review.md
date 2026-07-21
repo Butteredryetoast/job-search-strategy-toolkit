@@ -284,8 +284,8 @@ Record verbatim outputs. Confirm scenario A can pass HR while remaining weak for
 ```bash
 .venv/bin/python /Users/mac/.codex/skills/.system/skill-creator/scripts/generate_openai_yaml.py job-search-strategy-toolkit/resume-review-skill \
   --interface display_name="Dual-Lens Resume Review" \
-  --interface short_description="HR与部门负责人双视角简历评审" \
-  --interface default_prompt="请分别用HR和部门负责人视角独立评审这份简历。"
+  --interface short_description="从HR招聘筛选和部门负责人角度独立评分并评审中文简历" \
+  --interface default_prompt="请使用 $resume-review-skill 分别用HR和部门负责人视角独立评审这份简历。"
 ```
 
 - [ ] **Step 3: Run official and static validation**

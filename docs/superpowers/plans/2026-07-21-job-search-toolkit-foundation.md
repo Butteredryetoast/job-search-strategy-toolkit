@@ -353,8 +353,8 @@ git commit -m "feat: add role and company reference layers"
 ```bash
 .venv/bin/python /Users/mac/.codex/skills/.system/skill-creator/scripts/generate_openai_yaml.py job-search-strategy-toolkit \
   --interface display_name="Job Search Strategy Toolkit" \
-  --interface short_description="中文求职全链路策略工具箱" \
-  --interface default_prompt="请根据我现有的JD、简历或面试阶段，先判断下一步并一次只问一个必要问题。"
+  --interface short_description="面向中文求职者的JD解读、简历优化、双视角评审与面试准备工具箱" \
+  --interface default_prompt="请使用 $job-search-strategy-toolkit 根据我现有的JD、简历或面试阶段，先判断下一步并一次只问一个必要问题。"
 ```
 
 - [ ] **Step 2: Create a validation environment and run official validation**
