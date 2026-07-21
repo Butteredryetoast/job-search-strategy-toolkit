@@ -4,6 +4,18 @@ import { readFile, readdir } from 'node:fs/promises';
 
 const root = new URL('../job-search-strategy-toolkit/', import.meta.url);
 
+test('top-level skill declares required frontmatter metadata', async () => {
+  const text = await readFile(new URL('SKILL.md', root), 'utf8');
+  assert.match(text, /^---\nname: job-search-strategy-toolkit\ndescription: .+\n---/);
+});
+
+test('agent metadata exposes the toolkit identity', async () => {
+  const yaml = await readFile(new URL('agents/openai.yaml', root), 'utf8');
+  assert.match(yaml, /^interface:\n/);
+  assert.match(yaml, /^  display_name: "Job Search Strategy Toolkit"$/m);
+  assert.match(yaml, /^  short_description: "互联网白领全链路求职策略工具箱"$/m);
+});
+
 test('top-level skill is Chinese-first and routes all entry modes', async () => {
   const text = await readFile(new URL('SKILL.md', root), 'utf8');
   for (const phrase of ['默认使用简体中文', '只有 JD', '只有简历', 'JD + 简历', '面试轮次']) {
