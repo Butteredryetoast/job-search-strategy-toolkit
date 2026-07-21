@@ -3,7 +3,7 @@
     "id": "resume-only",
     "prompt": "我上传了一份简历，帮我看看。",
     "expected_route": "ask_resume_goal",
-    "required_behavior": ["一次只问一个问题", "询问通用润色、面试准备或JD定制"]
+    "required_behavior": ["一次只问一个问题", "询问通用润色或JD定制"]
   },
   {
     "id": "jd-only",
@@ -12,9 +12,9 @@
     "required_behavior": ["先解读JD", "仅在需要匹配度时索取简历"]
   },
   {
-    "id": "interview-only",
-    "prompt": "我下周是部门负责人面，帮我准备。",
-    "expected_route": "interview_prep",
-    "required_behavior": ["识别部门负责人面", "只追问下一个必要信息"]
+    "id": "review-direct",
+    "prompt": "请从 HR 与部门负责人两个视角评审下面这份简历。\n\n以下是匿名合成评测夹具，仅用于测试；不包含真实用户、可识别个人或真实企业信息，且不代表用户确认事实：\n候选人代号：候选人乙\n目标岗位：数据分析师\n2021.07—至今｜合成企业丁（虚构）｜数据分析师\n- 支持经营周报，使用 SQL 提取订单与用户数据。\n- 协助搭建销售看板，供业务团队查看。\n2020.07—2021.06｜合成企业戊（虚构）｜运营专员\n- 整理活动数据并输出复盘表。",
+    "expected_route": "resume_review",
+    "required_behavior": ["路由到双视角评审", "保持 HR 与部门负责人视角独立", "缺失事实标记为待确认"]
   }
 ]

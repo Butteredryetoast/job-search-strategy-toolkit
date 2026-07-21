@@ -50,6 +50,12 @@ test('top-level router handles JD, resume, combined, review, and vague requests 
   assert.match(text, /你这次更需要通用修改润色，还是根据具体JD定制简历？/);
 });
 
+test('top-level router enters a supported route immediately when the material is sufficient', async () => {
+  const text = await readFile(new URL('SKILL.md', root), 'utf8');
+  assert.match(text, /材料充分时立即进入对应子 Skill/);
+  assert.match(text, /不询问是否开始、是否继续等非必要确认/);
+});
+
 test('top-level router keeps JD and review in chat and limits PDF to the revised resume', async () => {
   const text = await readFile(new URL('SKILL.md', root), 'utf8');
   assert.match(text, /JD 解读.*仅在聊天中输出/);
@@ -58,10 +64,54 @@ test('top-level router keeps JD and review in chat and limits PDF to the revised
 });
 
 test('shared references cover 12 roles and 6 company types', async () => {
-  const roles = (await readdir(new URL('references/roles/', root))).filter((name) => name.endsWith('.md'));
-  const companies = (await readdir(new URL('references/companies/', root))).filter((name) => name.endsWith('.md'));
-  assert.equal(roles.length, 12);
-  assert.equal(companies.length, 6);
+  const expectedRoles = [
+    'operations', 'product', 'data-analysis', 'marketing', 'finance', 'audit',
+    'hr', 'sales-bd', 'engineering', 'legal', 'strategy-consulting', 'design',
+  ];
+  const expectedCompanies = [
+    'large-tech', 'mid-size-internet', 'startup', 'multinational', 'state-owned', 'bank-finance',
+  ];
+  const roles = (await readdir(new URL('references/roles/', root)))
+    .filter((name) => name.endsWith('.md'))
+    .map((name) => name.slice(0, -3))
+    .sort();
+  const companies = (await readdir(new URL('references/companies/', root)))
+    .filter((name) => name.endsWith('.md'))
+    .map((name) => name.slice(0, -3))
+    .sort();
+  assert.deepEqual(roles, expectedRoles.sort());
+  assert.deepEqual(companies, expectedCompanies.sort());
+});
+
+test('role and company references use only their approved section headings', async () => {
+  const approvedRoleHeadings = [
+    '核心业务目标', '招聘关键词', '有意义的成果指标', '常用工具与方法',
+    'HR筛选重点', '部门负责人关注点', '常见简历雷区',
+  ];
+  const approvedCompanyHeadings = ['招聘偏好', '简历风格', '证据要求', '风险信号'];
+
+  for (const [directory, headings] of [
+    ['references/roles/', approvedRoleHeadings],
+    ['references/companies/', approvedCompanyHeadings],
+  ]) {
+    const names = (await readdir(new URL(directory, root))).filter((name) => name.endsWith('.md'));
+    for (const name of names) {
+      const text = await readFile(new URL(`${directory}${name}`, root), 'utf8');
+      const sections = [...text.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
+      assert.deepEqual(sections, headings, `${directory}${name} must use only approved headings`);
+      assert.doesNotMatch(text, /interview|面试|题册|workbook|story[- ]bank|故事库/i);
+    }
+  }
+});
+
+test('active router evaluation contains only current supported route scenarios', async () => {
+  const scenarios = JSON.parse(await readFile(new URL('evals/router.json', import.meta.url), 'utf8'));
+  assert.deepEqual(scenarios.map((scenario) => scenario.id), ['resume-only', 'jd-only', 'review-direct']);
+  assert.deepEqual(
+    scenarios.map((scenario) => scenario.expected_route),
+    ['ask_resume_goal', 'jd_insight', 'resume_review'],
+  );
+  assert.doesNotMatch(JSON.stringify(scenarios), /interview|面试|题册|workbook|story[- ]bank|故事库/i);
 });
 
 test('top-level skill forbids persistence and demographic scoring', async () => {

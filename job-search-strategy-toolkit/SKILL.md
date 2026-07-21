@@ -19,6 +19,8 @@ description: "Use when a Chinese job seeker asks to interpret a JD, rewrite or t
 | 直接要求评审简历，或要求 HR 与部门负责人分别看 | [双视角评审](resume-review-skill/SKILL.md) |
 | 需求不明确 | 只问一个能决定以上路由的必要问题。 |
 
+材料充分时立即进入对应子 Skill，不询问是否开始、是否继续等非必要确认；只有缺少决定路由或完成当前任务所必需的信息时，才一次询问一个问题。
+
 ## 输出边界
 
 - JD 解读仅在聊天中输出。
