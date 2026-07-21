@@ -147,7 +147,16 @@ git commit -m "test: add toolkit foundation evaluations"
 
 - [ ] **Step 1: Create the local validation environment**
 
-Add `.venv/` as the only line in `.gitignore`, then run:
+Keep the approved local-development ignores in `.gitignore`:
+
+```gitignore
+.worktrees/
+.superpowers/
+.venv/
+node_modules/
+```
+
+Then run:
 
 ```bash
 python3 -m venv .venv
