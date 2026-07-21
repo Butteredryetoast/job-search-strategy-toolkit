@@ -1,5 +1,9 @@
 # Job Search Strategy Toolkit Design
 
+## Implementation base
+
+Use the downloaded MIT-licensed `offer-toolkit-skill` as the working code base. Rename and adapt its JD, resume, behavioral-interview, and HTML template modules to the approved architecture; add only the missing dual-lens review and selective PDF orchestration capabilities. Preserve the upstream MIT license and copyright notice. Remove upstream product branding, author footers, personal paths, persistent JD/story banks, and example candidate data from runtime behavior and generated reports.
+
 ## Status
 
 Approved in conversation on 2026-07-21.

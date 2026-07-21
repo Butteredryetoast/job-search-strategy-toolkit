@@ -20,6 +20,7 @@
 - Do not persist user profiles, resumes, JDs, interview records, or story banks.
 - Do not use gender in scoring or hiring recommendations.
 - Do not copy names, footers, personal paths, branding, or example data from `offer-toolkit-skill`.
+- Reuse the installed MIT-licensed `offer-toolkit-skill` as the implementation base; preserve its license and copyright notice, while removing product branding, personal paths, and example candidate data from runtime outputs.
 
 ---
 
@@ -132,7 +133,7 @@ git add tests/evals/router.json tests/baselines/router-without-skill.md tests/te
 git commit -m "test: add toolkit foundation evaluations"
 ```
 
-### Task 2: Scaffold the top-level and four child skills
+### Task 2: Seed the bundle from `offer-toolkit-skill`
 
 **Files:**
 - Create: `job-search-strategy-toolkit/`
@@ -142,8 +143,8 @@ git commit -m "test: add toolkit foundation evaluations"
 - Create: `job-search-strategy-toolkit/interview-prep-skill/`
 
 **Interfaces:**
-- Consumes: Skill Creator `init_skill.py`.
-- Produces: five valid skill folders with `SKILL.md` and `agents/openai.yaml` entry points.
+- Consumes: `/Users/mac/.codex/skills/offer-toolkit-skill`, licensed under MIT.
+- Produces: a renamed working copy with four child skills, preserved license notice, and reusable JD/resume/interview/template assets ready for targeted modification.
 
 - [ ] **Step 1: Create the local validation environment**
 
@@ -165,35 +166,32 @@ python3 -m venv .venv
 
 Expected: `.venv/bin/python` imports `yaml` successfully.
 
-- [ ] **Step 2: Initialize the top-level skill**
+- [ ] **Step 2: Copy the existing toolkit as the working base**
 
 ```bash
-.venv/bin/python /Users/mac/.codex/skills/.system/skill-creator/scripts/init_skill.py job-search-strategy-toolkit \
-  --path . \
-  --resources references,assets,scripts \
-  --interface display_name="Job Search Strategy Toolkit" \
-  --interface short_description="中文求职全链路策略工具箱" \
-  --interface default_prompt="请根据我现有的JD、简历或面试阶段，先判断下一步并一次只问一个必要问题。"
+cp -R /Users/mac/.codex/skills/offer-toolkit-skill job-search-strategy-toolkit
+rm -rf job-search-strategy-toolkit/.git
 ```
 
-Expected: `job-search-strategy-toolkit/SKILL.md` and `job-search-strategy-toolkit/agents/openai.yaml` exist.
+Expected: `job-search-strategy-toolkit/SKILL.md`, `LICENSE`, and the three source child skills exist. Verify the copied `LICENSE` retains `Copyright (c) 2026 yanliudesign` and the MIT permission notice.
 
-- [ ] **Step 3: Initialize each child skill inside the bundle**
+- [ ] **Step 3: Map reusable source modules to the approved architecture**
 
 ```bash
-.venv/bin/python /Users/mac/.codex/skills/.system/skill-creator/scripts/init_skill.py jd-insight-skill --path job-search-strategy-toolkit --interface display_name="JD Insight" --interface short_description="中文JD解读与投递策略" --interface default_prompt="请解读这份JD，并说明还需要哪一项材料。"
-.venv/bin/python /Users/mac/.codex/skills/.system/skill-creator/scripts/init_skill.py resume-rebuild-skill --path job-search-strategy-toolkit --interface display_name="Resume Rebuild" --interface short_description="简历深挖、润色与JD定制" --interface default_prompt="请先判断我是需要通用润色、面试准备还是JD定制。"
-.venv/bin/python /Users/mac/.codex/skills/.system/skill-creator/scripts/init_skill.py resume-review-skill --path job-search-strategy-toolkit --interface display_name="Dual-Lens Resume Review" --interface short_description="HR与部门负责人双视角简历评审" --interface default_prompt="请分别用HR和部门负责人视角评审这份简历。"
-.venv/bin/python /Users/mac/.codex/skills/.system/skill-creator/scripts/init_skill.py interview-prep-skill --path job-search-strategy-toolkit --interface display_name="Interview Prep" --interface short_description="按面试轮次生成准备方案和题册" --interface default_prompt="请先询问我正在准备哪一轮面试。"
+mv job-search-strategy-toolkit/job-description-skill job-search-strategy-toolkit/jd-insight-skill
+mv job-search-strategy-toolkit/resume-skill job-search-strategy-toolkit/resume-rebuild-skill
+mv job-search-strategy-toolkit/bq-skill job-search-strategy-toolkit/interview-prep-skill
 ```
 
-Expected: each child directory contains `SKILL.md` and `agents/openai.yaml`.
+Create `job-search-strategy-toolkit/resume-review-skill/` with Skill Creator because the source toolkit has no equivalent. Generate `agents/openai.yaml` for all five skill entry points. Preserve reusable prompts, frameworks, templates, and scripts; later tasks will replace conflicting persistence, branding, footer, story-bank, and output rules.
+
+Expected: each child directory contains `SKILL.md`; `resume-review-skill` is a valid initialized skill; the copied MIT license remains at bundle root.
 
 - [ ] **Step 4: Commit scaffolding**
 
 ```bash
 git add .gitignore job-search-strategy-toolkit
-git commit -m "chore: scaffold job search skill bundle"
+git commit -m "chore: seed toolkit from MIT-licensed base"
 ```
 
 ### Task 3: Implement the top-level router and common rules
