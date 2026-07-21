@@ -15,6 +15,8 @@ Approved in conversation on 2026-07-21.
 
 Build a public Codex skill bundle for job seekers that supports the full path from understanding a job description to preparing for a specific interview round. Its primary audience is 25–35-year-old white-collar workers in Chinese first-tier and strong second-tier cities, especially people working in internet-related roles.
 
+The product is Chinese-first. Default interaction, terminology, examples, and PDF delivery use Simplified Chinese and reflect the conventions of the Chinese recruitment market. English or bilingual output is used only when the user requests it or the target role, JD, resume, or interview language requires it.
+
 The toolkit must produce evidence-based, practical outputs without fabricating experience, responsibilities, metrics, company facts, or salary data.
 
 ## Target roles
@@ -55,6 +57,7 @@ Rules must distinguish these six company types:
 6. Do not use gender as an input to resume scoring, job matching, or interview assessment.
 7. Do not persist user profiles, resumes, job descriptions, interview records, or story banks.
 8. Let the user choose which report sections to include before PDF rendering.
+9. Use Simplified Chinese by default, preserve necessary English professional terms, and switch to English or bilingual output only when the task requires it.
 
 ## Architecture
 
@@ -239,6 +242,7 @@ Every score and verdict must reference a resume passage, JD requirement, user-co
 Use online research when JD analysis benefits from company, product, industry, hiring-trend, or compensation context.
 
 - Prefer primary and authoritative sources.
+- For China-market roles, prioritize authoritative Chinese sources and explain foreign-market data when it is not directly comparable.
 - Include source links and retrieval dates in the final PDF.
 - Label statements as confirmed public facts, user-confirmed facts, or inference.
 - If sources conflict, show the conflict and explain the uncertainty.
@@ -262,7 +266,7 @@ Use this pipeline:
 
 > Validated temporary structured data > HTML templates > browser PDF rendering > visual and structural verification
 
-The PDF must use A4 print dimensions, stable Chinese font fallbacks, page numbers, generation date, target company and role where relevant, working source links, and visible evidence labels. The question workbook must preserve adequate handwriting space.
+The PDF must use Simplified Chinese by default, A4 print dimensions, stable Chinese font fallbacks, page numbers, generation date, target company and role where relevant, working source links, and visible evidence labels. Preserve standard English professional terms where Chinese translation would reduce precision. The question workbook must preserve adequate handwriting space. Generate English or bilingual sections only when requested or required by the target role.
 
 ## Error handling
 
@@ -315,4 +319,5 @@ The first release is successful when:
 6. Interview preparation changes according to the interview round.
 7. Users can select report sections and receive one verified PDF.
 8. No persistent user profile, JD bank, resume history, or story bank is created.
-9. The skill is portable, independently discoverable, and ready for public release.
+9. Chinese users receive clear Simplified Chinese interaction and PDF output by default, with reliable English or bilingual handling when required.
+10. The skill is portable, independently discoverable, and ready for public release.
