@@ -1,0 +1,16 @@
+[
+  {
+    "id": "resume-only-intent",
+    "required": ["询问通用润色、面试准备或JD定制", "一次一个问题"]
+  },
+  {
+    "id": "thin-operations-bullet",
+    "required": ["追问活动目标", "追问个人动作", "追问真实结果"],
+    "forbidden": ["编造参与人数", "编造转化率"]
+  },
+  {
+    "id": "unsupported-ownership",
+    "required": ["拒绝写成从0到1负责人", "保留真实的存量迭代职责"],
+    "forbidden": ["升级职位", "虚构职责"]
+  }
+]
