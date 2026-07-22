@@ -24,7 +24,7 @@
 在 Codex 中打开技能安装入口，输入 GitHub 仓库地址：
 
 ```text
-https://github.com/Butteredryetoast/job-search-strategy-toolkit
+https://github.com/Butteredryetoast/jobsearch-toolkit-skill
 ```
 
 安装完成后，重启或刷新 Codex。在对话中直接说“帮我解读这份 JD”或“帮我修改简历”即可触发。
@@ -36,13 +36,13 @@ https://github.com/Butteredryetoast/job-search-strategy-toolkit
 也可以使用 Git：
 
 ```bash
-git clone https://github.com/Butteredryetoast/job-search-strategy-toolkit.git
+git clone https://github.com/Butteredryetoast/jobsearch-toolkit-skill.git
 ```
 
 如果只需要安装到本机技能目录，可复制整个目录：
 
 ```bash
-cp -R job-search-strategy-toolkit /你的/Codex/skills目录/
+cp -R jobsearch-toolkit-skill /你的/Codex/skills目录/job-search-strategy-toolkit
 ```
 
 ## 使用教程
@@ -83,7 +83,7 @@ cp -R job-search-strategy-toolkit /你的/Codex/skills目录/
 ## 目录
 
 ```text
-job-search-strategy-toolkit/       # 下载后即为 Skill 根目录
+jobsearch-toolkit-skill/           # 下载后即为 Skill 根目录
 ├── SKILL.md
 ├── jd-insight-skill/
 ├── resume-rebuild-skill/
