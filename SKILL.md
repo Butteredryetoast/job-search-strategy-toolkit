@@ -76,7 +76,7 @@ description: "Use when a Chinese job seeker provides a JD or resume and needs ro
 
 ### 简历重建
 
-先解析为 `resume-data` 结构，再进行证据深挖、通用润色或 JD 定制。用户确认内容后才生成 `revised-resume`。生成 PDF 前让用户选择模板；有照片自动保留原照片并使用带照片模板，没有照片自动避开带照片模板。
+先解析为 `resume-data` 结构，再进行证据深挖、通用润色或 JD 定制。用户确认内容后才生成 `revised-resume`。生成 PDF 前用中文名称展示兼容模板并让用户选择；有照片自动保留原照片并使用带照片模板，没有照片自动避开带照片模板。
 
 ### 双视角评审
 

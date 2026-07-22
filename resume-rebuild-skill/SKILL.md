@@ -94,14 +94,34 @@ description: "Use when a Chinese-speaking job seeker provides a resume and needs
 
 ## 七、模板与照片流程
 
-当前有 16 套 HTML 模板，位于 `templates/`。选择原则：
+当前有 16 套 HTML 模板，位于 `templates/`。英文标识只供脚本内部调用；与用户对话时只展示和接受中文名称。
 
-- ATS/海投：`classic-ats`、`ledger`
-- 工程/数据高密度：`tech-compact`
-- 产品/市场/综合岗位：`modern-sidebar`、`pillar`、`executive`
-- 设计/品牌/内容：`elegant-serif`、`atelier`、`timeline`、`swiss`、`editorial-banner`、`warm-editorial`
-- 有人物照片：`photo-corporate` 或 `photo-minimal`
-- 无人物照片：自动避开两套 Photo 模板
+| 中文名称 | 内部标识 | 适合场景 |
+|---|---|---|
+| 经典ATS | `classic-ats` | 单栏、机器解析友好，适合大多数岗位海投 |
+| 学术工程 | `ledger` | 学术、软件、数据和工程岗位 |
+| 技术紧凑 | `tech-compact` | 信息密度较高的工程与技术岗位 |
+| 现代侧栏 | `modern-sidebar` | 产品、运营、市场和综合岗位 |
+| 信息卡片 | `pillar` | 产品、市场和项目管理岗位 |
+| 优雅衬线 | `elegant-serif` | 咨询、市场和偏人文岗位 |
+| 极简留白 | `atelier` | 设计、创意和审美导向岗位 |
+| 职业时间轴 | `timeline` | 需要突出职业成长轨迹的候选人 |
+| 瑞士栅格 | `swiss` | 设计、品牌和创意岗位 |
+| 商务管理 | `executive` | 金融、咨询、管理和资深岗位 |
+| 杂志编辑 | `editorial-banner` | 品牌、内容和编辑岗位 |
+| 商务头像 | `photo-corporate` | 需要保留人物照片的商务简历 |
+| 极简头像 | `photo-minimal` | 需要保留人物照片的简约简历 |
+| 极简网格 | `minimal-grid` | ATS 友好，适合大多数岗位投递 |
+| 深蓝商务 | `navy-executive` | 管理、客户和综合岗位 |
+| 暖色编辑 | `warm-editorial` | 市场、品牌、内容和设计岗位 |
+
+### 选择规则
+
+1. 生成 PDF 前必须暂停并让用户选择模板，不得直接使用默认模板。
+2. 向用户展示兼容模板的中文名称和一句话说明，不单独展示英文内部标识。
+3. 用户选择中文名称后，将其映射为对应内部标识再渲染；渲染脚本同时接受中文名称和英文标识。
+4. 用户要求查看全部模板时，展示 16 个中文名称并标注照片兼容性。
+5. 有人物照片时优先展示“商务头像”和“极简头像”；无人物照片时不展示这两套头像模板。
 
 ### 照片规则
 
@@ -128,14 +148,14 @@ description: "Use when a Chinese-speaking job seeker provides a resume and needs
 ```json
 {
   "id": "revised-resume",
-  "template": "classic-ats",
+  "template": "经典ATS",
   "photo": "可选的图片 URL、data:image 或本地绝对路径",
   "name": "用户姓名",
   "headline": "目标职位"
 }
 ```
 
-运行 `scripts/render-resume.mjs`。脚本会读取 `templates/<template>.html` 的真实样式，不使用固定默认 CSS，并输出 PDF。PDF 只包含修订简历，不包含 JD 解读、评审分数、诊断过程或修改说明。
+运行 `scripts/render-resume.mjs`。脚本先把中文名称映射为内部标识，再读取 `templates/<template>.html` 的真实样式，不使用固定默认 CSS，并输出 PDF。PDF 只包含修订简历，不包含 JD 解读、评审分数、诊断过程或修改说明。
 
 ## 九、输出格式
 

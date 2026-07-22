@@ -16,7 +16,26 @@ const escapeHtml = (value = '') => String(value)
 const safeUrl = (value = '') => /^(https?:|mailto:)/i.test(String(value)) ? String(value) : '';
 const data = JSON.parse(await readFile(resolve(inputArg), 'utf8'));
 if (data.id !== 'revised-resume') throw new Error('输入必须是 revised-resume 数据');
-const requestedTemplate = data.template || 'classic-ats';
+const templateNames = new Map([
+  ['经典ATS', 'classic-ats'],
+  ['学术工程', 'ledger'],
+  ['技术紧凑', 'tech-compact'],
+  ['现代侧栏', 'modern-sidebar'],
+  ['信息卡片', 'pillar'],
+  ['优雅衬线', 'elegant-serif'],
+  ['极简留白', 'atelier'],
+  ['职业时间轴', 'timeline'],
+  ['瑞士栅格', 'swiss'],
+  ['商务管理', 'executive'],
+  ['杂志编辑', 'editorial-banner'],
+  ['商务头像', 'photo-corporate'],
+  ['极简头像', 'photo-minimal'],
+  ['极简网格', 'minimal-grid'],
+  ['深蓝商务', 'navy-executive'],
+  ['暖色编辑', 'warm-editorial'],
+]);
+const requestedTemplateLabel = String(data.template || '经典ATS');
+const requestedTemplate = templateNames.get(requestedTemplateLabel) || requestedTemplateLabel;
 if (!/^[a-z0-9-]+$/.test(requestedTemplate)) throw new Error(`模板不存在：${requestedTemplate}`);
 const photoTemplates = new Set(['photo-corporate', 'photo-minimal']);
 const photoValue = data.photo ?? data.contact?.photo ?? '';
